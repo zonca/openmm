@@ -46,6 +46,7 @@
 #endif
 #include <set>
 #include <algorithm>
+#include <iostream>
 
 #include "ReferencePlatform.h"
 
@@ -70,8 +71,10 @@ static int platformInitializer = registerPlatforms();
 
 Platform::~Platform() {
     set<KernelFactory*> uniqueKernelFactories;
-    for (map<string, KernelFactory*>::const_iterator iter = kernelFactories.begin(); iter != kernelFactories.end(); ++iter)
+    for (map<string, KernelFactory*>::const_iterator iter = kernelFactories.begin(); iter != kernelFactories.end(); ++iter) {
         uniqueKernelFactories.insert(iter->second);
+		std::cout << "Kernel Factories, insert " << iter->second << std::endl;
+		}
     for (set<KernelFactory*>::const_iterator iter = uniqueKernelFactories.begin(); iter != uniqueKernelFactories.end(); ++iter)
         delete *iter;
 }
@@ -118,11 +121,13 @@ void Platform::contextDestroyed(ContextImpl& context) const {
 
 void Platform::registerKernelFactory(const string& name, KernelFactory* factory) {
     kernelFactories[name] = factory;
+	std::cout << "Platform::registerKernelFactory " << name << std::endl;
 }
 
 bool Platform::supportsKernels(const vector<string>& kernelNames) const {
     for (int i = 0; i < (int) kernelNames.size(); ++i)
         if (kernelFactories.find(kernelNames[i]) == kernelFactories.end())
+			std:cout << "Cannot find kernel for " << kernelNames[i] << std::endl;
             return false;
     return true;
 }
